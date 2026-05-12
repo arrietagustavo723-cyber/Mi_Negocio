@@ -1,0 +1,544 @@
+index.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Administrativo Microempresas Premium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .card-hover { transition: 0.3s ease; }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com">feather.replace();
+</script>
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+<div id="pantallaLogin" class="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-700 to-emerald-500">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
+
+    <div class="flex justify-center gap-4 mb-8">
+      <button onclick="mostrarLogin()" class="bg-green-600 text-white px-5 py-2 rounded-xl">Ingresar</button>
+      <button onclick="mostrarRegistro()" class="bg-gray-200 px-5 py-2 rounded-xl">Registrarse</button>
+    </div>
+
+    <div id="loginBox">
+      <h1 class="text-4xl font-bold text-center text-green-700">Iniciar Sesión</h1>
+      <p class="text-center text-gray-500 mb-8">Sistema Administrativo</p>
+
+      <div class="space-y-4">
+        <input id="loginUsuario" type="text" placeholder="Usuario" class="w-full border p-4 rounded-xl">
+        <div class="relative">
+          <input id="loginPassword" type="password" placeholder="Contraseña" class="w-full border p-4 rounded-xl pr-14">
+
+          <button onclick="togglePassword('loginPassword', this)" class="absolute right-4 top-4 text-gray-500">
+            👁️
+          </button>
+        </div>
+
+        <button onclick="iniciarSesion()" class="w-full bg-green-600 hover:bg-green-700 text-white p-4 rounded-xl text-lg">
+          Entrar al Sistema
+        </button>
+
+        <div id="mensajeLogin"></div>
+      </div>
+    </div>
+
+    <div id="registroBox" class="hidden">
+      <h1 class="text-4xl font-bold text-center text-green-700">Crear Cuenta</h1>
+      <p class="text-center text-gray-500 mb-8">Registro de Usuario</p>
+
+      <div class="space-y-4">
+        <input id="registroNombre" type="text" placeholder="Nombre completo" class="w-full border p-4 rounded-xl">
+
+        <input id="registroUsuario" type="text" placeholder="Usuario" class="w-full border p-4 rounded-xl">
+
+        <div class="relative">
+          <input id="registroPassword" type="password" placeholder="Contraseña" class="w-full border p-4 rounded-xl pr-14">
+
+          <button onclick="togglePassword('registroPassword', this)" class="absolute right-4 top-4 text-gray-500">
+            👁️
+          </button>
+        </div>
+
+        <button onclick="registrarUsuario()" class="w-full bg-green-600 hover:bg-green-700 text-white p-4 rounded-xl text-lg">
+          Crear Cuenta
+        </button>
+
+        <div id="mensajeRegistro"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sistema" class="hidden min-h-screen flex">
+
+  <aside class="w-72 bg-gradient-to-b from-green-800 to-emerald-600 text-white p-6 shadow-2xl">
+    <h1 class="text-3xl font-bold mb-10">MiNegocio</h1>
+
+    <div class="mb-8 bg-green-600 p-4 rounded-2xl">
+      <p class="text-sm">Usuario conectado</p>
+      <h2 id="usuarioActivo" class="text-xl font-bold"></h2>
+    </div>
+
+    <nav class="space-y-4">
+      <div class="bg-white/10 rounded-2xl p-3 text-sm mb-5">
+        <p class="opacity-80">Estado del negocio</p>
+        <h3 class="text-2xl font-bold">Activo</h3>
+      </div>
+      <button onclick="mostrarModulo('dashboard')" class="w-full text-left hover:bg-green-600 p-4 rounded-xl">📊 Dashboard Premium</button>
+
+      <button onclick="mostrarModulo('ventas')" class="w-full text-left hover:bg-green-600 p-4 rounded-xl">🛒 Punto de Venta</button>
+
+      <button onclick="mostrarModulo('inventario')" class="w-full text-left hover:bg-green-600 p-4 rounded-xl">🏪 Inventario Inteligente</button>
+
+      <button onclick="mostrarModulo('clientes')" class="w-full text-left hover:bg-green-600 p-4 rounded-xl">👨‍💼 Gestión Clientes</button>
+
+      <button onclick="mostrarModulo('reportes')" class="w-full text-left hover:bg-green-600 p-4 rounded-xl">📈 Reportes Avanzados</button>
+
+      <button onclick="cerrarSesion()" class="w-full text-left bg-red-600 hover:bg-red-700 p-4 rounded-xl mt-10">
+        🚪 Cerrar sesión
+      </button>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-8 overflow-y-auto bg-gradient-to-br from-gray-100 to-green-50">
+
+    <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-3xl shadow-lg">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">Sistema Administrativo Inteligente</h1>
+        <p class="text-gray-500">Control completo para microempresas</p>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="bg-green-100 text-green-700 px-4 py-2 rounded-xl font-semibold">
+          🔔 4 Notificaciones
+        </div>
+
+        <img src="https://i.pravatar.cc/50" class="rounded-full border-4 border-green-500">
+      </div>
+    </div>
+
+    <section id="dashboard">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-3xl p-6 shadow-xl card-hover">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Productos Más Vendidos</h2>
+            <span class="text-3xl">🔥</span>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between mb-1">
+                <span>Arroz</span>
+                <span>90%</span>
+              </div>
+              <div class="bg-gray-200 rounded-full h-3">
+                <div class="bg-green-500 h-3 rounded-full" style="width:90%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-1">
+                <span>Aceite</span>
+                <span>70%</span>
+              </div>
+              <div class="bg-gray-200 rounded-full h-3">
+                <div class="bg-yellow-500 h-3 rounded-full" style="width:70%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 shadow-xl card-hover">
+          <h2 class="text-xl font-bold mb-4">Actividad del Sistema</h2>
+
+          <div class="space-y-3">
+            <div class="bg-green-100 text-green-700 p-3 rounded-2xl">✅ Venta registrada</div>
+            <div class="bg-blue-100 text-blue-700 p-3 rounded-2xl">📦 Inventario actualizado</div>
+            <div class="bg-yellow-100 text-yellow-700 p-3 rounded-2xl">👥 Nuevo cliente agregado</div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-3xl p-6 shadow-xl card-hover">
+          <h2 class="text-2xl font-bold mb-4">Resumen General</h2>
+
+          <div class="space-y-4">
+            <div class="flex justify-between">
+              <span>Ventas semanales</span>
+              <span>$3.200.000</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Ganancias</span>
+              <span>$1.850.000</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Productos activos</span>
+              <span>128</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1 class="text-4xl font-bold mb-8">Dashboard Principal</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+
+        <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-3xl shadow-xl card-hover">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="opacity-80">Ventas Hoy</p>
+              <h2 class="text-3xl font-bold mt-2">$450.000</h2>
+            </div>
+            <div class="text-5xl">💰</div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-3xl shadow-xl card-hover">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="opacity-80">Productos</p>
+              <h2 class="text-3xl font-bold mt-2">128</h2>
+            </div>
+            <div class="text-5xl">📦</div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-6 rounded-3xl shadow-xl card-hover">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="opacity-80">Clientes</p>
+              <h2 class="text-3xl font-bold mt-2">58</h2>
+            </div>
+            <div class="text-5xl">👥</div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 rounded-3xl shadow-xl card-hover">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="opacity-80">Ganancias</p>
+              <h2 class="text-3xl font-bold mt-2">$2.300.000</h2>
+            </div>
+            <div class="text-5xl">📈</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <p class="text-gray-500">Ventas Hoy</p>
+          <h2 class="text-3xl font-bold mt-2">$450.000</h2>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <p class="text-gray-500">Productos</p>
+          <h2 class="text-3xl font-bold mt-2">128</h2>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <p class="text-gray-500">Clientes</p>
+          <h2 class="text-3xl font-bold mt-2">58</h2>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <p class="text-gray-500">Ganancias</p>
+          <h2 class="text-3xl font-bold mt-2">$2.300.000</h2>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-2xl font-bold mb-4">Alertas del Sistema</h2>
+
+        <div class="space-y-3">
+          <div class="bg-red-100 text-red-700 p-4 rounded-xl">
+            ⚠ 2 productos con bajo inventario
+          </div>
+
+          <div class="bg-yellow-100 text-yellow-700 p-4 rounded-xl">
+            ⚠ 3 clientes tienen deuda pendiente
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ventas" class="hidden">
+      <h1 class="text-4xl font-bold mb-8">Registro de Ventas</h1>
+
+      <div class="bg-white rounded-2xl shadow p-6 space-y-4">
+
+        <input id="ventaCliente" type="text" placeholder="Nombre del cliente" class="w-full border p-4 rounded-xl">
+
+        <input id="ventaProducto" type="text" placeholder="Producto" class="w-full border p-4 rounded-xl">
+
+        <input id="ventaCantidad" type="number" placeholder="Cantidad" class="w-full border p-4 rounded-xl">
+
+        <input id="ventaValor" type="number" placeholder="Valor" class="w-full border p-4 rounded-xl">
+
+        <button onclick="registrarVenta()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl">
+          Guardar Venta
+        </button>
+
+        <div id="mensajeVenta"></div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow mt-8 overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-green-600 text-white">
+            <tr>
+              <th class="p-4">Cliente</th>
+              <th class="p-4">Producto</th>
+              <th class="p-4">Cantidad</th>
+              <th class="p-4">Valor</th>
+            </tr>
+          </thead>
+
+          <tbody id="tablaVentas"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="inventario" class="hidden">
+      <h1 class="text-4xl font-bold mb-8">Inventario</h1>
+
+      <div class="bg-white p-6 rounded-2xl shadow space-y-4 mb-8">
+        <input id="productoNombre" type="text" placeholder="Nombre del producto" class="w-full border p-4 rounded-xl">
+
+        <input id="productoStock" type="number" placeholder="Cantidad" class="w-full border p-4 rounded-xl">
+
+        <button onclick="agregarProducto()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl">
+          Agregar Producto
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-green-600 text-white">
+            <tr>
+              <th class="p-4">Producto</th>
+              <th class="p-4">Stock</th>
+              <th class="p-4">Estado</th>
+            </tr>
+          </thead>
+
+          <tbody id="tablaInventario"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="clientes" class="hidden">
+      <h1 class="text-4xl font-bold mb-8">Clientes</h1>
+
+      <div class="bg-white p-6 rounded-2xl shadow space-y-4 mb-8">
+        <input id="clienteNombre" type="text" placeholder="Nombre del cliente" class="w-full border p-4 rounded-xl">
+
+        <input id="clienteDeuda" type="number" placeholder="Deuda" class="w-full border p-4 rounded-xl">
+
+        <button onclick="agregarCliente()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl">
+          Agregar Cliente
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-green-600 text-white">
+            <tr>
+              <th class="p-4">Cliente</th>
+              <th class="p-4">Estado</th>
+            </tr>
+          </thead>
+
+          <tbody id="tablaClientes"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="reportes" class="hidden">
+      <h1 class="text-4xl font-bold mb-8">Reportes</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <p class="text-gray-500">Ventas Totales</p>
+          <h2 class="text-3xl font-bold mt-2">$5.000.000</h2>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <p class="text-gray-500">Productos Vendidos</p>
+          <h2 class="text-3xl font-bold mt-2">120</h2>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <p class="text-gray-500">Clientes Registrados</p>
+          <h2 class="text-3xl font-bold mt-2">58</h2>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+
+let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+function mostrarRegistro() {
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('registroBox').classList.remove('hidden');
+}
+
+function mostrarLogin() {
+  document.getElementById('registroBox').classList.add('hidden');
+  document.getElementById('loginBox').classList.remove('hidden');
+}
+
+function registrarUsuario() {
+  const nombre = document.getElementById('registroNombre').value;
+  const usuario = document.getElementById('registroUsuario').value;
+  const password = document.getElementById('registroPassword').value;
+
+  if(nombre === '' || usuario === '' || password === '') {
+    document.getElementById('mensajeRegistro').innerHTML = `
+      <div class="bg-red-100 text-red-700 p-3 rounded-xl text-center">
+        ⚠ Complete todos los campos
+      </div>
+    `;
+    return;
+  }
+
+  usuarios.push({ nombre, usuario, password });
+
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+  document.getElementById('mensajeRegistro').innerHTML = `
+    <div class="bg-green-100 text-green-700 p-3 rounded-xl text-center">
+      ✅ Usuario registrado correctamente
+    </div>
+  `;
+
+  setTimeout(() => {
+    mostrarLogin();
+  }, 1500);
+}
+
+function iniciarSesion() {
+  const usuario = document.getElementById('loginUsuario').value;
+  const password = document.getElementById('loginPassword').value;
+
+  const encontrado = usuarios.find(
+    u => u.usuario === usuario && u.password === password
+  );
+
+  if(encontrado) {
+    document.getElementById('pantallaLogin').classList.add('hidden');
+    document.getElementById('sistema').classList.remove('hidden');
+
+    document.getElementById('usuarioActivo').innerText = encontrado.nombre;
+  } else {
+    document.getElementById('mensajeLogin').innerHTML = `
+      <div class="bg-red-100 text-red-700 p-3 rounded-xl text-center">
+        ❌ Usuario o contraseña incorrectos
+      </div>
+    `;
+  }
+}
+
+function cerrarSesion() {
+  document.getElementById('sistema').classList.add('hidden');
+  document.getElementById('pantallaLogin').classList.remove('hidden');
+}
+
+function mostrarModulo(id) {
+  const modulos = ['dashboard', 'ventas', 'inventario', 'clientes', 'reportes'];
+
+  modulos.forEach(modulo => {
+    document.getElementById(modulo).classList.add('hidden');
+  });
+
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function registrarVenta() {
+  const cliente = document.getElementById('ventaCliente').value;
+  const producto = document.getElementById('ventaProducto').value;
+  const cantidad = document.getElementById('ventaCantidad').value;
+  const valor = document.getElementById('ventaValor').value;
+
+  const fila = `
+    <tr class="border-b">
+      <td class="p-4">${cliente}</td>
+      <td class="p-4">${producto}</td>
+      <td class="p-4">${cantidad}</td>
+      <td class="p-4">$${valor}</td>
+    </tr>
+  `;
+
+  document.getElementById('tablaVentas').innerHTML += fila;
+
+  document.getElementById('mensajeVenta').innerHTML = `
+    <div class="bg-green-100 text-green-700 p-3 rounded-xl text-center mt-4">
+      ✅ Venta registrada correctamente
+    </div>
+  `;
+}
+
+function agregarProducto() {
+  const producto = document.getElementById('productoNombre').value;
+  const stock = document.getElementById('productoStock').value;
+
+  const estado = stock < 5
+    ? '<span class="text-red-600 font-bold">Bajo stock</span>'
+    : '<span class="text-green-600 font-bold">Disponible</span>';
+
+  const fila = `
+    <tr class="border-b">
+      <td class="p-4">${producto}</td>
+      <td class="p-4">${stock}</td>
+      <td class="p-4">${estado}</td>
+    </tr>
+  `;
+
+  document.getElementById('tablaInventario').innerHTML += fila;
+}
+
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+
+  if(input.type === 'password') {
+    input.type = 'text';
+    btn.innerHTML = '🙈';
+  } else {
+    input.type = 'password';
+    btn.innerHTML = '👁️';
+  }
+}
+
+function agregarCliente() {
+  const nombre = document.getElementById('clienteNombre').value;
+  const deuda = document.getElementById('clienteDeuda').value;
+
+  const estado = deuda > 0
+    ? `<span class="text-red-600">Debe $${deuda}</span>`
+    : '<span class="text-green-600">Sin deuda</span>';
+
+  const fila = `
+    <tr class="border-b">
+      <td class="p-4">${nombre}</td>
+      <td class="p-4">${estado}</td>
+    </tr>
+  `;
+
+  document.getElementById('tablaClientes').innerHTML += fila;
+}
+
+</script>
+
+</body>
+</html>
